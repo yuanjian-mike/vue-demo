@@ -1,21 +1,7 @@
-# vue-demo
+1. vue-super-flow 详情参考https://caohuatao.github.io
 
-> A Vue.js project
+2. jsPlumb 详情参考 https://www.jianshu.com/p/5b3fd4161365
 
-## Build Setup
+3. vue-tree-chart 详情参考 https://github.com/tower1229/Vue-Tree-Chart/blob/master/README_CN.md
 
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+4. vue-tree-chart的改造版tree-data 详情参考 https://github.com/shengbid/vue-demo

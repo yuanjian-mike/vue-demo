@@ -97,7 +97,7 @@
 
   .super-flow-base-demo {
     width            : 100%;
-    height           : 500px;
+    height           : 550px;
     margin           : 0 auto;
     background-color : #f5f5f5;
 
