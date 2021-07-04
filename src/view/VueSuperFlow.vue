@@ -26,14 +26,17 @@
     <super-flow
       ref="superFlow"
       :draggable="true"
-      :link-addable="false"
-      :link-editable="false"
-      :has-mark-line="false"
+      :link-addable="true"
+      :link-editable="true"
+      :has-mark-line="true"
+      mark-line-color="#55abfc"
       :node-list="nodeList"
       :link-list="linkList"
       :origin="origin"
       :graph-menu="graphMenuList"
       :node-menu="nodeMenuList"
+      :link-menu="linkMenuList"
+      :link-desc="linkDesc"
     >
       <template v-slot:node="{meta}">
         <el-card>
@@ -42,7 +45,7 @@
       </template>
     </super-flow>
     <div>
-        <el-button type="primary" @click="dialogVisible = true">数据展示</el-button>
+      <el-button type="primary" @click="dialogVisible = true">数据展示</el-button>
     </div>
     <el-dialog
       title=""
@@ -61,11 +64,71 @@
         <el-button @click="dialogVisible = false">关 闭</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog
+      :title="drawerConf.title"
+      :visible.sync="drawerConf.visible"
+      :close-on-click-modal="false"
+      width="500px">
+      <el-form
+        @keyup.native.enter="settingSubmit"
+        @submit.native.prevent
+        v-show="drawerConf.type === drawerType.node"
+        ref="nodeSetting"
+        :model="nodeSetting">
+        <el-form-item
+          label="节点名称"
+          prop="name">
+          <el-input
+            v-model="nodeSetting.name"
+            placeholder="请输入节点名称"
+            maxlength="30">
+          </el-input>
+        </el-form-item>
+        <el-form-item
+          label="节点描述"
+          prop="desc">
+          <el-input
+            v-model="nodeSetting.desc"
+            placeholder="请输入节点描述"
+            maxlength="30">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <el-form
+        @keyup.native.enter="settingSubmit"
+        @submit.native.prevent
+        v-show="drawerConf.type === drawerType.link"
+        ref="linkSetting"
+        :model="linkSetting">
+        <el-form-item
+          label="连线描述"
+          prop="desc">
+          <el-input
+            v-model="linkSetting.desc"
+            placeholder="请输入连线描述">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <span
+        slot="footer"
+        class="dialog-footer">
+        <el-button
+          @click="drawerConf.cancel">
+          取 消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="settingSubmit">
+          确 定
+        </el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-  import {nodeList, linkList} from '../static/VueSuperFlow.js'
+  import {drawerType, nodeList, linkList} from '../static/VueSuperFlow.js'
   export default {
     data() {
       return {
@@ -73,16 +136,153 @@
         nodeList: [], // 节点列表
         linkList: [], // 连线列表
         origin: [0, 0], // graph 的二维坐标系原点
-        graphMenuList: [], // 对 graph 的右键菜单列表配置
-        nodeMenuList: [], // node 右键菜单配置
+        graphMenuList: [
+          [
+            {
+              label: '节点',
+              selected: (graph, coordinate) => {
+                const id = "asdasd"
+                graph.addNode({
+                  'id': id,
+                  'width': 160,
+                  'height': 80,
+                  'coordinate': coordinate,
+                  'meta': {
+                    'name': '节点N',
+                    'desc': '111111'
+                  }
+                })
+              }
+            }
+          ],
+          [
+            {
+              label: '打印数据',
+              selected: (graph, coordinate) => {
+                console.log(JSON.stringify(graph.toJSON(), null, 2))
+                this.$message('已在控制台打印')
+              }
+            },
+            {
+              label: '全选',
+              selected: (graph, coordinate) => {
+                graph.selectAll()
+              }
+            }
+          ]
+        ], // 对 graph 的右键菜单列表配置
+        nodeMenuList: [ // node 右键菜单配置
+          [
+            {
+              label: '删除',
+              disable: false,
+              hidden(node) {
+                return node.meta.prop === 'start'
+              },
+              selected(node, coordinate) {
+                node.remove()
+              }
+            }
+          ],
+          [
+            {
+              label: '编辑',
+              selected: (node, coordinate) => {
+                this.drawerConf.open(drawerType.node, node)
+              }
+            }
+          ]
+        ],
+        linkMenuList: [
+          [
+            {
+              label: '删除',
+              disable: false,
+              selected: (link, coordinate) => {
+                link.remove()
+              }
+            }
+          ],
+          [
+            {
+              label: '编辑',
+              disable: false,
+              selected: (link, coordinate) => {
+                this.drawerConf.open(drawerType.link, link)
+              }
+            }
+          ]
+        ],
+        linkSetting: {
+          desc: ''
+        },
+        nodeSetting: {
+          name: '',
+          desc: ''
+        },
+        drawerType: drawerType,
+        drawerConf: {
+          title: '',
+          visible: false,
+          type: null,
+          info: null,
+          open: (type, info) => {
+            const conf = this.drawerConf
+            conf.visible = true
+            conf.type = type
+            conf.info = info
+            if (conf.type === drawerType.node) {
+              conf.title = '节点'
+              if (this.$refs.nodeSetting) this.$refs.nodeSetting.resetFields()
+              this.$set(this.nodeSetting, 'name', info.meta.name)
+              this.$set(this.nodeSetting, 'desc', info.meta.desc)
+            } else {
+              conf.title = '连线'
+              if (this.$refs.linkSetting) this.$refs.linkSetting.resetFields()
+              this.$set(this.linkSetting, 'desc', info.meta ? info.meta.desc : '')
+            }
+          },
+          cancel: () => {
+            this.drawerConf.visible = false
+            if (this.drawerConf.type === drawerType.node) {
+              this.$refs.nodeSetting.clearValidate()
+            } else {
+              this.$refs.linkSetting.clearValidate()
+            }
+          }
+        },
       }
     },
     created() {
-      this.nodeList = nodeList
-      this.linkList = linkList
+
+    },
+    mounted(id) {
+      this.$nextTick(function () {
+        this.nodeList = nodeList
+        this.linkList = linkList
+      })
     },
     methods: {
-
+      linkDesc(link) {
+        return link.meta ? link.meta.desc : ''
+      },
+      settingSubmit() {
+        const conf = this.drawerConf
+        if (this.drawerConf.type === drawerType.node) {
+          if (!conf.info.meta) conf.info.meta = {}
+          Object.keys(this.nodeSetting).forEach(key => {
+            this.$set(conf.info.meta, key, this.nodeSetting[key])
+          })
+          this.$refs.nodeSetting.resetFields()
+        } else {
+          if (!conf.info.meta) conf.info.meta = {}
+          Object.keys(this.linkSetting).forEach(key => {
+            this.$set(conf.info.meta, key, this.linkSetting[key])
+          })
+          this.$refs.linkSetting.resetFields()
+        }
+        conf.visible = false
+      }
     }
   }
 </script>

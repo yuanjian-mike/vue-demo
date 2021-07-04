@@ -66,7 +66,9 @@ let linkList = [
     'endId': '2',
     'startAt': [160, 40],
     'endAt': [0, 40],
-    'meta': null
+    'meta': {
+      desc: '描述'
+    }
   },
   {
     'id': '21',
@@ -74,7 +76,9 @@ let linkList = [
     'endId': '22',
     'startAt': [160, 40],
     'endAt': [0, 40],
-    'meta': null
+    'meta': {
+      desc: '描述'
+    }
   },
   {
     'id': '22',
@@ -82,7 +86,9 @@ let linkList = [
     'endId': '23',
     'startAt': [160, 40],
     'endAt': [0, 40],
-    'meta': null
+    'meta': {
+      desc: '描述'
+    }
   },
   {
     'id': '2',
@@ -90,7 +96,9 @@ let linkList = [
     'endId': '3',
     'startAt': [160, 40],
     'endAt': [0, 40],
-    'meta': null
+    'meta': {
+      desc: '描述'
+    }
   },
   {
     'id': '2',
@@ -98,7 +106,9 @@ let linkList = [
     'endId': '3',
     'startAt': [160, 40],
     'endAt': [0, 40],
-    'meta': null
+    'meta': {
+      desc: '描述'
+    }
   },
   {
     'id': '3',
@@ -106,11 +116,19 @@ let linkList = [
     'endId': '3',
     'startAt': [0, 40],
     'endAt': [160, 40],
-    'meta': null
+    'meta': {
+      desc: '描述'
+    }
   }
 ]
 
+const drawerType = {
+  node: 0,
+  link: 1
+}
+
 export {
+  drawerType,
   nodeList,
-  linkList
+  linkList,
 }
