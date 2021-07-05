@@ -11,8 +11,11 @@
   },
   "dependencies": {
     "@oxoyo/xfc": "^3.0.2",
+    "css-loader": "^3.6.0",
     "element-ui": "^2.15.3",
     "jsplumb": "^2.15.6",
+    "less": "^3.12.2",
+    "less-loader": "^5.0.0",
     "node-sass": "^4.14.1",
     "sass-loader": "^7.1.0",
     "vue": "^2.6.14",
