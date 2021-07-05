@@ -122,7 +122,3 @@
     }
   }
 </script>
-
-<style>
-
-</style>

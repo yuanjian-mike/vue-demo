@@ -3,12 +3,10 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-
+// import './styles/element-variables.scss'
 import SuperFlow from 'vue-super-flow'
-import 'vue-super-flow/lib/index.css'
+// import './styles/vue-super-flow-variables.scss'
 
 Vue.use(ElementUI)
 Vue.use(SuperFlow)
